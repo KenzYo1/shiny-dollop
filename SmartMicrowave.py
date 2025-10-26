@@ -6,43 +6,182 @@
 # ALGORITMA:
 t = 0
 started = False
-temp = float(input("Suhu awal: "))
-moisture_content = 0.9
-max_temp = float(input("suhu maksumum: "))
-power = [0.2, 0.4, 0.6, 0.8, 1.0]
-power_choice = 4
-while not started:
-    match input("tekan tombol: "):
-        case "15s":
-            t += 15
-        case "30s":
-            t += 30
-        case "45s":
-            t += 45
-        case "1m":
-            t += 60
-        case "power":
-            power_choice = (power_choice+1) % len(power)
-            if power_choice == 4:
-                print("mode daya: maksimum")
+
+presets = ["Kembali", "Defrost", "Cook", "Reheat"]
+food_lists = ["Kembali", "Kentang", "Popcorn", "Pizza", "Minuman", "Roti-rotian"]
+food_lists_info = [[420, 1.0], [180, 1.0], [480, 0.4], [90, 1.0], [360, 0.5]]
+power_choice = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+timer_list = [0, 15, 30, 45, 60]
+power = power_choice[-1]
+on = 0
+menu = 0
+
+print("=================================")
+print("Welcome to shiny-dollop Microwave")
+print("=================================")
+nyala = input("Nyalakan microwave? (y/n) ")
+
+if nyala == "y":
+    on = 1
+else:
+    on = 0
+
+while on:
+    print("====================")
+    print(f"Waktu = {t} detik")
+    print(f"power = {power:.0%}")
+    print("Menu : ")
+    print("1. Set Timer")
+    print("2. Set Power")
+    print("3. Start Microwave")
+    print("4. Presets")
+    print("5. Exit")
+    print("====================")
+    cek = 0
+
+    while cek == 0:
+        menu = int(input("Enter [1 - 5]: "))
+        if 1 <= int(menu) <= 5:
+            cek = 1
+        else:
+            print("Input harus [1 - 5]")
+
+    match menu:
+        case 1:
+            print("\n\nTimer\n")
+            cek = 0
+            while cek == 0:
+                timer = int(input("Input timer [0/15/30/45/60] (detik), [0] untuk set timer: "))
+                if timer not in timer_list:
+                    print("Input harus [0/15/30/45/60], [0] untuk set timer ")
+                elif timer in timer_list and timer != 0 and t + timer <= 3600:
+                    t += timer
+                elif timer > 3600:
+                    print("Timer kelamaan")
+                    cek = 1
+                elif timer == 0:
+                    print(f"Timer set ke {t // 60:02d}:{t % 60:02d}")
+                    cek = 1
+
+        case 2:
+            print("\n\nPower\n")
+            cek = 0
+            while cek == 0:
+                power_input = int(input("Input power [10/20/30/40/50/60/70/80/90/100](%), [0] untuk keluar: "))
+                if power_input / 10 in power_choice:
+                    power = power_input
+                    cek = 1
+                if power_input == 0:
+                    cek = 1
+                else:
+                    print("Input harus [10/20/30/40/50/60/70/80/90/100], [0] untuk keluar")
+
+        case 3:
+            print("\n\n\n\n\n")
+            started = 1
+            if (t == 0):
+                print("Timer belum di set")
+            elif (power == 0):
+                print("Power belum di set")
             else:
-                print("mode daya:", int(power[power_choice]*100),"%")
-        case "start":
-            started = True
+                started = 1
+                print("Microwave Dimulai!")
+                while (started and t >= 0):
+                    print(f"[{t // 60:02d}:{t % 60:02d}]")
+                    t -= 1
+                    if input("Input 'y' to stop") == "y":
+                        started = 0
+                    elif t % 15 == 0:
+                        print("DRRRRRRRRRRRRRRRRRRRR")
+                print("tutututut timer habis")
 
-while started and t > 0 and temp < max_temp:
-    print(str(t // 60)+":"+str(t % 60))
-    t -= 1
-    temp += power[power_choice]
-    if input("tekan stop? ") == "ya":
-        started = False
+                if input("Matikan microwave? (y/n)") == "y":
+                    print("terima kasih telah menggunakan shinny-dollop")
+                    exit()
+        case 4:
+            lanjut = True
+            while lanjut:
+                print("\n\n======== Presets ========:")
+                [print(f"{i}. {presets[i]}") for i in range(len(presets))]
+                us_input = int(input("\n"))
+                if us_input == 1:
+                    print("Defrost : Durasi 10 Menit per 0,5 Kg Daging, Max 3 Kg")
+                    meat = int(input("Berat daging yang ingin dipanaskan? "))
+                    if meat > 3:
+                        print("Terlalu berat")
+                    if meat <= 0:
+                        print("Berat yang tidak mungkin")
+                    elif 0 < meat <= 3:
+                        t = meat * 20 * 60
+                        power = 0.2
+                        print(f"Timer: {t//60:02d}:{t%60:02d}", f"\nPower: {power}")
+                        confirm = input("Konfirmasi? (y/n) ")
+                        if confirm == "y":
+                            lanjut = False
+                        else:
+                            lanjut = True
 
-if not started:
-    print("microwave dihentikan")
-elif t == 0:
-    print("selesai")
-elif temp >= max_temp:
-    print("suhu maksimum tercapai")
+                if us_input == 2:
+                    print("Berikut adalah list makanan yang bisa dimasak:")
+                    [print(f"{i}. {food_lists[i]}") for i in range(len(food_lists))]
+                    us_input = int(input("Silakan pilih opsi makanan yang akan dimasak [0-5] "))
+                    if us_input == 0:
+                        lanjut = True
+                    if 1 <= us_input <= 5:
+                        food = food_lists[us_input]
+                        t = food_lists_info[us_input][0]
+                        power = food_lists_info[us_input][1]
+                        print(f"Makanan yang dimasak adalah {food}",
+                              f"Timer: {t//60:02d}:{t%60:02d}", f"\nPower: {power}")
+                        confirm = input("Konfirmasi? (y/n)")
+                        if confirm == "y":
+                            lanjut = False
+                        else:
+                            lanjut = True
+                    else:
+                        print("Input hanya dari 0-5")
 
-# ADD presets:
-# Defrost, Warm, Cook, Food Presets, 
+        case 5:
+            print("terima kasih telah menggunakan shinny-dollop")
+            exit()
+
+
+
+
+
+
+
+
+
+
+
+    # match input:
+    #     case "15s":
+    #         t += 15
+    #     case "30s":
+    #         t += 30
+    #     case "45s":
+    #         t += 45
+    #     case "1m":
+    #         t += 60
+    #     case "power":
+    #         power_choice = (power_choice+1) % len(power)
+    #         if power_choice == 4:
+    #             print("mode daya: maksimum")
+    #         else:
+    #             print("mode daya:", int(power[power_choice]*100),"%")
+    #     case "start":
+    #         started = True
+    #     case "exit":
+
+# while started and t > 0 and temp < max_temp:
+#     print(str(t // 60)+":"+str(t % 60))
+#     t -= 1
+#     temp += power[power_choice]
+#     if input("tekan stop? ") == "ya":
+#         started = False
+
+# if not started:
+#     print("microwave dihentikan")
+# elif t == 0:
+#     print("selesai")
