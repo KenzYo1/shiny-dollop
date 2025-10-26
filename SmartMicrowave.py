@@ -9,7 +9,7 @@
 # timer_list : list[int]
 # food_lists_info : list[[int, float]]
 # on : int
-# menu : int
+# menu L int
 
 # ALGORITMA:
 t = 0
@@ -99,6 +99,8 @@ while on:
                     t -= 1
                     if input("Input 'y' to stop") == "y":
                         started = 0
+                        t = 0
+                        power = 1.0
                 print("tutututut timer habis")
 
                 if input("Matikan microwave? (y/n) ") == "y":
@@ -133,13 +135,13 @@ while on:
                 if us_input == 2 and lanjut == True:
                     print("Berikut adalah list makanan yang bisa dimasak:")
                     [print(f"{i}. {food_lists[i]}") for i in range(len(food_lists))]
-                    us_input = int(input("Silakan pilih opsi makanan yang akan dimasak [0-5] "))
-                    if us_input == 0:
+                    makanan = int(input("Silakan pilih opsi makanan yang akan dimasak [0 - 5] "))
+                    if makanan == 0:
                         lanjut = True
-                    if 1 <= us_input <= 5:
-                        food = food_lists[us_input]
-                        t = food_lists_info[us_input-1][0]
-                        power = food_lists_info[us_input-1][1]
+                    if 1 <= makanan <= 5:
+                        food = food_lists[makanan]
+                        t = food_lists_info[makanan-1][0]
+                        power = food_lists_info[makanan-1][1]
                         print(f"Makanan yang dimasak adalah {food}",
                               f"\nTimer: {t//60:02d}:{t%60:02d}", f"\nPower: {power:.0%}")
                         confirm = input("Konfirmasi? (y/n) ")
@@ -148,7 +150,7 @@ while on:
                         else:
                             lanjut = True
                     else:
-                        print("Input hanya dari 0-5")
+                        print("Input hanya dari [0 - 5]")
 
                 if us_input == 3 and lanjut == True:
                     t = 60
