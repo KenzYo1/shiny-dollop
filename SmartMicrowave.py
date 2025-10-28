@@ -19,8 +19,8 @@
 # meat : int
 # confirm: bool
 # makanan : int
-# temporary_t
-# temporary_power
+# temporary_t : int
+# temporary_power : float
 
 # ALGORITMA:
 t = 0
