@@ -216,6 +216,5 @@ while on:
             print("Terima kasih telah menggunakan shinny-dollop")
             print("============================================")
             on = False
-        case _:
-            print("Mohon input nomor dari [0 - 5]")
+
 
